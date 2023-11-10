@@ -1,4 +1,0 @@
-<launch>
-    <node pkg="ros_hw_pub_sub" type="topic_publisher" name="pubparam"/>
-    <node pkg="ros_hw_pub_sub" type="topic_subscriber" name="subparam"/>
-</launch>
