@@ -1,15 +1,19 @@
 <?xml version="1.0"?>
-<package format="2">
-<name>ros_qt_sub</name>
-<version>0.1.0</version>
-<description>Robit ROS assignment2 subscriber package</description>
-<license>Apache 2.0</license>
-<author email="dkdll1021@gmail.com">Hyeongjun Yoon</author>
-<maintainer email="dkdll1021@gmail.com">Hyeongjun Yoon</maintainer>
-<url type="repository">https://github.com/YoonHJ123/Github-Robit_Intern_Yoonhyeongjun_HW_repo.git</url>
-<buildtool_depend>catkin</buildtool_depend>
-<depend>roscpp</depend>
-<depend>std_msgs</depend>
-<depend>message_generation</depend>
-<export></export >
+<package>
+  <name>ros_qt_sub</name>
+  <version>0.1.0</version>
+  <description>ROS robit assignment 2 ros_qt_subscriber</description>
+  <maintainer email="dkdll1021@gmail.com">Hyeongjun Yoon</maintainer>
+  <author>Hyeongjun Yoon</author>
+  <license>BSD</license>
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>qt_build</build_depend>
+  <build_depend>roscpp</build_depend>
+  <build_depend>std_msgs</build_depend>
+  <build_depend>libqt4-dev</build_depend>
+  <run_depend>qt_build</run_depend>
+  <run_depend>roscpp</run_depend>
+  <run_depend>std_msgs</run_depend>
+  <run_depend>libqt4-dev</run_depend>
+<export></export>
 </package>

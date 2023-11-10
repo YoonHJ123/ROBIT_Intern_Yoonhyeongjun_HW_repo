@@ -1,22 +1,63 @@
-cmake_minimum_required(VERSION 2.8.3)
+##############################################################################
+# CMake
+##############################################################################
+
+cmake_minimum_required(VERSION 3.5.0)
 project(ros_qt_sub)
-## 캐킨 빌드를 할 때 요구되는 구성요소 패키지이다.
-## 의존성 패키지로 message_generation, std_msgs, roscpp이며 이 패키지들이 존재하지 않으면 빌드 도중에 에러가 난다.
-find_package(catkin REQUIRED COMPONENTS message_generation std_msgs roscpp)
-## 메시지 선언: MsgTutorial.msg
-add_message_files(FILES MsgTutorial.msg)
-## 의존하는 메시지를 설정하는 옵션이다.
-## std_msgs가 설치되어 있지 않다면 빌드 도중에 에러가 난다.
-generate_messages(DEPENDENCIES std_msgs)
-## 캐킨 패키지 옵션으로 라이브러리, 캐킨 빌드 의존성, 시스템 의존 패키지를 기술한다.
-catkin_package(
-LIBRARIES ros_qt_sub
-CATKIN_DEPENDS std_msgs roscpp
-)
-## 인클루드 디렉터리를 설정한다.
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+
+set(CMAKE_AUTOUIC ON)
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
+
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+##############################################################################
+# Catkin
+##############################################################################
+
+# qt_build provides the qt cmake glue, roscpp the comms for a default talker
+find_package(catkin REQUIRED COMPONENTS
+  roscpp
+  std_msgs
+  )
 include_directories(${catkin_INCLUDE_DIRS})
-## topic_subscriber 노드에 대한 빌드 옵션이다.
-add_executable(topic_subscriber src/topic_subscriber.cpp)
-add_dependencies(topic_subscriber ${${PROJECT_NAME}_EXPORTED_TARGETS}
-${catkin_EXPORTED_TARGETS})
-target_link_libraries(topic_subscriber ${catkin_LIBRARIES})
+# Use this to define what the package will export (e.g. libs, headers).
+# Since the default here is to produce only a binary, we don't worry about
+# exporting anything. 
+catkin_package()
+
+##############################################################################
+# Qt Environment
+##############################################################################
+
+# included via the dependency call in package.xml
+find_package(Qt5 COMPONENTS Widgets REQUIRED)
+
+##############################################################################
+# Sections
+##############################################################################
+
+file(GLOB QT_FORMS RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} ui/*.ui)
+file(GLOB QT_RESOURCES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} resources/*.qrc)
+file(GLOB_RECURSE QT_MOC RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} FOLLOW_SYMLINKS include/ros_qt_sub/*.hpp)
+
+QT5_ADD_RESOURCES(QT_RESOURCES_CPP ${QT_RESOURCES})
+QT5_WRAP_UI(QT_FORMS_HPP ${QT_FORMS})
+QT5_WRAP_CPP(QT_MOC_HPP ${QT_MOC})
+
+##############################################################################
+# Sources
+##############################################################################
+
+file(GLOB_RECURSE QT_SOURCES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} FOLLOW_SYMLINKS src/*.cpp)
+
+##############################################################################
+# Binaries
+##############################################################################
+
+add_executable(ros_qt_sub ${QT_SOURCES} ${QT_RESOURCES_CPP} ${QT_FORMS_HPP} ${QT_MOC_HPP})
+target_link_libraries(ros_qt_sub Qt5::Widgets Qt5::Gui ${QT_LIBRARIES} ${catkin_LIBRARIES})
+install(TARGETS ros_qt_sub RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+
